@@ -43,7 +43,7 @@ PLATS= aix ansi bsd freebsd generic linux macosx mingw posix solaris
 # What to install.
 TO_BIN= lua luac
 TO_INC= lua.h luaconf.h lualib.h lauxlib.h ../etc/lua.hpp
-TO_LIB= liblua.a
+TO_LIB= liblua.a liblua.so.$(R)
 TO_MAN= lua.1 luac.1
 
 # Lua version and release.
@@ -53,7 +53,8 @@ R= 5.1.5
 all:	$(PLAT)
 
 $(PLATS) clean:
-	cd src && $(MAKE) $@
+	# cd src && $(MAKE) $@
+	cd src && $(MAKE) $@ V=$(V) R=$(R)
 
 test:	dummy
 	src/lua test/hello.lua
@@ -64,6 +65,8 @@ install: dummy
 	cd src && $(INSTALL_DATA) $(TO_INC) $(INSTALL_INC)
 	cd src && $(INSTALL_DATA) $(TO_LIB) $(INSTALL_LIB)
 	cd doc && $(INSTALL_DATA) $(TO_MAN) $(INSTALL_MAN)
+	ln -s $(INSTALL_LIB)/liblua.so.$(R) $(INSTALL_LIB)/liblua.so.$(V)
+	ln -s $(INSTALL_LIB)/liblua.so.$(R) $(INSTALL_LIB)/liblua.so
 
 ranlib:
 	cd src && cd $(INSTALL_LIB) && $(RANLIB) $(TO_LIB)
